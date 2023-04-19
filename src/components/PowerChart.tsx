@@ -27,21 +27,23 @@ export function PowerChart({ powerData, usageData, showTomorrow }: ChartProps) {
       {/* <Tooltip /> */}
       <Legend />
       <Line data={lineData} dataKey="value" stroke="#8884d8" dot={false} name="Sähkön hinta (snt/kWh, vasen asteikko)" />
-      <Area data={areas[0]?.data} dataKey="value"/>
+      {areas.map((a) => (
+        <Area data={a.data} dataKey="value"/>
+      ))}
     </ComposedChart>
     </>
   )
 
   function getAreas(data: PowerPrice[]): {name: string, data: PowerPrice[]}[] {
     const areas: {name: string, data: PowerPrice[]}[] = [];
-    if (data.length > 12 && usageData.length) {
+    if (data.length > 12 && usageData.length > 0) {
       usageData.forEach((u, i) => {
         const areaName = u.name;
         const startDate = new Date(new Date(data[12].date).toISOString().slice(0, 11) + u.start + ':00.000Z').getTime();
         const endDate = new Date(new Date(data[12].date).toISOString().slice(0, 11) + u.end + ':00.000Z').getTime();
         const areaData: PowerPrice[] = JSON.parse(JSON.stringify(data.filter((p) => p.date > startDate && p.date < endDate)))
-        areaData.unshift({ date: startDate, value: data[i - 1]?.value });
-        areaData.push({ date: endDate, value: data[i]?.value });
+        areaData.unshift({ date: startDate, value: areaData[0].value });
+        areaData.push({ date: endDate, value: areaData[areaData.length - 1].value });
         areas.push({name: areaName, data: areaData})
       })
     }

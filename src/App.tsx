@@ -46,13 +46,20 @@ function App() {
     e.preventDefault();
     console.log('e', e);
     const data = new FormData(e.target);
-    const form = {
-      name: data.get('name'),
-      start: data.get('start'),
-      end: data.get('end'),
-      powerWatt: data.get('powerWatt'),
+    const form: Usage = {
+      name: data.get('name')?.toString() || '',
+      start: data.get('start')?.toString() || '',
+      end: data.get('end')?.toString() || '',
+      powerWatt: Number(data.get('powerWatt')),
     }
-    console.log('form', form)
+    const newUsage: Usage[] = JSON.parse(JSON.stringify(usageData));
+    const foundUsageIndex: number | undefined = newUsage.findIndex((d) => d.name === form.name);
+    if (foundUsageIndex > -1) {
+      newUsage.splice(foundUsageIndex, 1, form);
+    } else {
+      newUsage.push(form);
+    }
+    setUsageData(newUsage);
   }
 
   return (
