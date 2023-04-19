@@ -62,11 +62,17 @@ function App() {
     setUsageData(newUsage);
   }
 
+  const handleRemoveClick = (i: number) => {
+    const newUsage: Usage[] = JSON.parse(JSON.stringify(usageData));
+    newUsage.splice(i, 1);
+    setUsageData(newUsage);
+  }
+
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <UsageTable usageData={usageData} />
+        <UsageTable usageData={usageData} onRemoveClick={handleRemoveClick} />
         <form onSubmit={handleSubmit}>
           <TextField id="name" name="name" label="Name" type='text'></TextField>
           <TextField id="start" name="start" label="Start time (HH:MM)" type='text'></TextField>
@@ -78,10 +84,6 @@ function App() {
       </ThemeProvider>
     </div>
   )
-}
-
-export type UsageTableProps = {
-  usageData: Usage[]
 }
 
 function processPowerData(prices: PowerPriceIncoming[]): any {

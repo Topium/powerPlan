@@ -1,8 +1,12 @@
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
-import React from 'react';
-import { UsageTableProps } from '../App';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button } from '@mui/material';
+import { Usage } from '../interfaces/Usage';
 
-export function UsageTable({ usageData }: UsageTableProps) {
+export type UsageTableProps = {
+  usageData: Usage[];
+  onRemoveClick: (i: number) => void;
+}
+
+export function UsageTable({ usageData, onRemoveClick }: UsageTableProps) {
   return <TableContainer component={Paper}>
     <Table sx={{ minWidth: 650 }} size="small">
       <TableHead>
@@ -11,6 +15,7 @@ export function UsageTable({ usageData }: UsageTableProps) {
           <TableCell>Start</TableCell>
           <TableCell>End</TableCell>
           <TableCell>Power (W)</TableCell>
+          <TableCell></TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -20,6 +25,7 @@ export function UsageTable({ usageData }: UsageTableProps) {
             <TableCell>{u.start}</TableCell>
             <TableCell>{u.end}</TableCell>
             <TableCell>{u.powerWatt}</TableCell>
+            <TableCell><Button onClick={() => {onRemoveClick(i)}}>X</Button></TableCell>
           </TableRow>
         )))}
       </TableBody>
