@@ -23,12 +23,13 @@ export function PowerChart({ powerData, usageData, showTomorrow }: ChartProps) {
         dataKey="date"
         domain={['dataMin', 'dataMax']}
         tickFormatter={tick => new Date(tick).toTimeString().substring(0, 5)} />
-      <YAxis label="Sähkön hinta (snt/kWh)" type="number" />
+      <YAxis yAxisId="left" orientation='left' label="Sähkön hinta (snt/kWh)" type="number" />
+      <YAxis yAxisId="right" orientation='right' label="Kulutus" type="number" />
       {/* <Tooltip /> */}
       <Legend />
-      <Line data={lineData} dataKey="value" stroke="#8884d8" dot={false} name="Sähkön hinta (snt/kWh, vasen asteikko)" />
+      <Line data={lineData} dataKey="value" stroke="#8884d8" dot={false} yAxisId="left" name="Sähkön hinta (snt/kWh, vasen asteikko)" />
       {areas.map((a) => (
-        <Area data={a.data} dataKey="value"/>
+        <Area yAxisId="right" data={a.data} dataKey="value"/>
       ))}
     </ComposedChart>
     </>
@@ -39,12 +40,12 @@ export function PowerChart({ powerData, usageData, showTomorrow }: ChartProps) {
     if (data.length > 12 && usageData.length > 0) {
       usageData.forEach((u, i) => {
         const areaName = u.name;
-        const startDate = new Date(new Date(data[12].date).toISOString().slice(0, 11) + u.start + ':00.000Z').getTime();
-        const endDate = new Date(new Date(data[12].date).toISOString().slice(0, 11) + u.end + ':00.000Z').getTime();
+        const startDate = new Date(new Date(data[12].date).toISOString().slice(0, 11) + u.start + ':00.000Z').getTime() + new Date().getTimezoneOffset() * 60000;
+        const endDate = new Date(new Date(data[12].date).toISOString().slice(0, 11) + u.end + ':00.000Z').getTime() + new Date().getTimezoneOffset() * 60000;
         const areaData: PowerPrice[] = JSON.parse(JSON.stringify(data.filter((p) => p.date > startDate && p.date < endDate)))
         areaData.unshift({ date: startDate, value: areaData[0].value });
         areaData.push({ date: endDate, value: areaData[areaData.length - 1].value });
-        areas.push({name: areaName, data: areaData})
+        areas.push({name: areaName, data: areaData.map((d) => { return ({date: d.date, value: d.value * u.powerWatt / 1000})} )})
       })
     }
     console.log('areas', areas)

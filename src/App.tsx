@@ -72,14 +72,8 @@ function App() {
     <div className="App">
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <UsageTable usageData={usageData} onRemoveClick={handleRemoveClick} />
-        <form onSubmit={handleSubmit}>
-          <TextField id="name" name="name" label="Name" type='text'></TextField>
-          <TextField id="start" name="start" label="Start time (HH:MM)" type='text'></TextField>
-          <TextField id="end" name="end" label="End time (HH:MM)" type='text'></TextField>
-          <TextField id="powerWatt" name="powerWatt" label="Power consumption (W)" type='number'></TextField>
-          <Button type="submit" variant="contained">Save new</Button>
-        </form>
+        <UsageTable usageData={usageData} onRemoveClick={handleRemoveClick} onHandleSubmit={handleSubmit}/>
+
         <PowerChart powerData={powerData} usageData={usageData} showTomorrow={showTomorrow}/>
       </ThemeProvider>
     </div>
