@@ -48,10 +48,12 @@ function App() {
     const data = new FormData(e.target);
     const form: Usage = {
       name: data.get('name')?.toString() || '',
-      start: data.get('start')?.toString() || '',
-      end: data.get('end')?.toString() || '',
+      start: data.get('start')?.toString() || '00:00',
+      end: data.get('end')?.toString() || '00:00',
       powerWatt: Number(data.get('powerWatt')),
     }
+    form.start = form.start.indexOf(':') === 1 ? '0' + form.start : form.start;
+    form.end = form.end.indexOf(':') === 1 ? '0' + form.end : form.end;
     const newUsage: Usage[] = JSON.parse(JSON.stringify(usageData));
     const foundUsageIndex: number | undefined = newUsage.findIndex((d) => d.name === form.name);
     if (foundUsageIndex > -1) {

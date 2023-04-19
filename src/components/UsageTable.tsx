@@ -11,6 +11,7 @@ export type UsageTableProps = {
 export function UsageTable({ usageData, onRemoveClick, onHandleSubmit }: UsageTableProps) {
   return (
   <>
+  <form id="powerUsageForm" onSubmit={onHandleSubmit}>
   <TableContainer component={Paper}>
     <Table sx={{ minWidth: 650 }} size="small">
       <TableHead>
@@ -33,21 +34,15 @@ export function UsageTable({ usageData, onRemoveClick, onHandleSubmit }: UsageTa
           </TableRow>
         )))}
         <TableRow>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
+          <TableCell><TextField name="name" label="Name" type='text' size="small"></TextField></TableCell>
+          <TableCell><TextField name="start" label="Start time (HH:MM)" type='text' size="small" inputProps={{ pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"}}></TextField></TableCell>
+          <TableCell><TextField name="end" label="End time (HH:MM)" type='text' size="small" inputProps={{ pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"}}></TextField></TableCell>
+          <TableCell><TextField name="powerWatt" label="Power consumption (W)" type='number' size="small"></TextField></TableCell>
+          <TableCell><Button type="submit" variant="contained">Save</Button></TableCell>
         </TableRow>
       </TableBody>
     </Table>
   </TableContainer>
-  <form onSubmit={onHandleSubmit}>
-    <TextField name="name" label="Name" type='text'></TextField>
-    <TextField name="start" label="Start time (HH:MM)" type='text'></TextField>
-    <TextField name="end" label="End time (HH:MM)" type='text'></TextField>
-    <TextField name="powerWatt" label="Power consumption (W)" type='number'></TextField>
-    <Button type="submit" variant="contained">Save new</Button>
   </form>
   </>
   )
