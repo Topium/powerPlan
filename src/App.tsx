@@ -4,7 +4,7 @@ import { PowerPrice } from './interfaces/PowerPrice'
 import { PowerPriceIncoming } from './interfaces/PowerPriceIncoming'
 import { PowerChart } from './components/PowerChart'
 import { ThemeProvider } from '@emotion/react'
-import { Button, CssBaseline, TextField, createTheme, useMediaQuery } from '@mui/material'
+import { CssBaseline, createTheme, useMediaQuery } from '@mui/material'
 import React from 'react'
 import { Usage } from './interfaces/Usage'
 import { UsageTable } from './components/UsageTable'
@@ -19,7 +19,7 @@ function App() {
     .then(data => setPowerData(data))
   }, [])
 
-  const tableRef = useRef();
+  const tableRef = useRef<typeof UsageTable>();
   const [showTomorrow, setShowTomorrow] = useState<boolean>(false);
   const [powerData, setPowerData] = useState<PowerPrice[]>([])
   const [usageData, setUsageData] = useState<Usage[]>([

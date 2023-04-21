@@ -8,7 +8,7 @@ export type UsageTableProps = {
   onHandleSubmit: (e: BaseSyntheticEvent) => void;
 }
 
-export const UsageTable = forwardRef<any, UsageTableProps>(({ usageData, onRemoveClick, onHandleSubmit }, ref) => {
+export const UsageTable = forwardRef<{resetForm: () => void}, UsageTableProps>(({ usageData, onRemoveClick, onHandleSubmit }, ref) => {
   const resetForm = () => {
     setForm({ name: '', start: '', end: '', powerWatt: ''})
   }
@@ -33,7 +33,9 @@ export const UsageTable = forwardRef<any, UsageTableProps>(({ usageData, onRemov
   const handleChange = (e: BaseSyntheticEvent)  => {
     console.log('handlechange', e)
     const temp = {...form};
-    temp[e.target.name] = e.target.value;
+    const key: keyof typeof temp = e.target.name;
+    temp[key] = e.target.value;
+    
     setForm(temp);
   }
 
