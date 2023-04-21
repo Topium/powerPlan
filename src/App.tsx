@@ -1,4 +1,4 @@
-import { BaseSyntheticEvent, useEffect, useState } from 'react'
+import { BaseSyntheticEvent, useEffect, useRef, useState } from 'react'
 import './App.css'
 import { PowerPrice } from './interfaces/PowerPrice'
 import { PowerPriceIncoming } from './interfaces/PowerPriceIncoming'
@@ -19,6 +19,7 @@ function App() {
     .then(data => setPowerData(data))
   }, [])
 
+  const tableRef = useRef();
   const [showTomorrow, setShowTomorrow] = useState<boolean>(false);
   const [powerData, setPowerData] = useState<PowerPrice[]>([])
   const [usageData, setUsageData] = useState<Usage[]>([
@@ -62,6 +63,7 @@ function App() {
       newUsage.push(form);
     }
     setUsageData(newUsage);
+    tableRef.current?.resetForm()
   }
 
   const handleRemoveClick = (i: number) => {
@@ -74,7 +76,7 @@ function App() {
     <div className="App">
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <UsageTable usageData={usageData} onRemoveClick={handleRemoveClick} onHandleSubmit={handleSubmit}/>
+        <UsageTable usageData={usageData} onRemoveClick={handleRemoveClick} onHandleSubmit={handleSubmit} ref={tableRef}/>
 
         <PowerChart powerData={powerData} usageData={usageData} showTomorrow={showTomorrow}/>
       </ThemeProvider>

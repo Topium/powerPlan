@@ -1,6 +1,6 @@
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button, TextField } from '@mui/material';
 import { Usage } from '../interfaces/Usage';
-import { BaseSyntheticEvent } from 'react';
+import { BaseSyntheticEvent, forwardRef, useImperativeHandle, useState } from 'react';
 
 export type UsageTableProps = {
   usageData: Usage[];
@@ -8,7 +8,44 @@ export type UsageTableProps = {
   onHandleSubmit: (e: BaseSyntheticEvent) => void;
 }
 
-export function UsageTable({ usageData, onRemoveClick, onHandleSubmit }: UsageTableProps) {
+export const UsageTable = forwardRef<any, UsageTableProps>(({ usageData, onRemoveClick, onHandleSubmit }, ref) => {
+  const resetForm = () => {
+    setForm({ name: '', start: '', end: '', powerWatt: ''})
+  }
+  
+  useImperativeHandle(ref, () => ({
+    resetForm
+  }));
+  
+  const [form, setForm] = useState<Usage>({
+    name: '',
+    start: '',
+    end: '',
+    powerWatt: ''
+  })
+
+  const handleCellClick = (i: number) => {
+    console.log('usagedata', usageData[i]);
+    setForm(usageData[i])
+    console.log('form', form)
+  }
+
+  const handleChange = (e: BaseSyntheticEvent)  => {
+    console.log('handlechange', e)
+    const temp = {...form};
+    temp[e.target.name] = e.target.value;
+    setForm(temp);
+  }
+
+  const formHasEmptyFields = (): boolean => {
+    return (
+      form.name === '' ||
+      form.start === '' ||
+      form.end === '' ||
+      form.powerWatt === ''
+    )
+  }
+
   return (
   <>
   <form id="powerUsageForm" onSubmit={onHandleSubmit}>
@@ -26,19 +63,19 @@ export function UsageTable({ usageData, onRemoveClick, onHandleSubmit }: UsageTa
       <TableBody>
         {usageData.map(((u, i) => (
           <TableRow key={i}>
-            <TableCell>{u.name}</TableCell>
-            <TableCell>{u.start}</TableCell>
-            <TableCell>{u.end}</TableCell>
-            <TableCell>{u.powerWatt}</TableCell>
+            <TableCell onClick={() => handleCellClick(i)}>{u.name}</TableCell>
+            <TableCell onClick={() => handleCellClick(i)}>{u.start}</TableCell>
+            <TableCell onClick={() => handleCellClick(i)}>{u.end}</TableCell>
+            <TableCell onClick={() => handleCellClick(i)}>{u.powerWatt}</TableCell>
             <TableCell><Button onClick={() => {onRemoveClick(i)}}>X</Button></TableCell>
           </TableRow>
         )))}
         <TableRow>
-          <TableCell><TextField name="name" label="Name" type='text' size="small"></TextField></TableCell>
-          <TableCell><TextField name="start" label="Start time (HH:MM)" type='text' size="small" inputProps={{ pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"}}></TextField></TableCell>
-          <TableCell><TextField name="end" label="End time (HH:MM)" type='text' size="small" inputProps={{ pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"}}></TextField></TableCell>
-          <TableCell><TextField name="powerWatt" label="Power consumption (W)" type='number' size="small"></TextField></TableCell>
-          <TableCell><Button type="submit" variant="contained">Save</Button></TableCell>
+          <TableCell><TextField required value={form.name} onChange={(e) => handleChange(e)} name="name" label="Name" type='text' size="small"></TextField></TableCell>
+          <TableCell><TextField required value={form.start} onChange={(e) => handleChange(e)} name="start" label="Start time (HH:MM)" type='text' size="small" inputProps={{ pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"}}></TextField></TableCell>
+          <TableCell><TextField required value={form.end} onChange={(e) => handleChange(e)} name="end" label="End time (HH:MM)" type='text' size="small" inputProps={{ pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"}}></TextField></TableCell>
+          <TableCell><TextField required value={form.powerWatt} onChange={(e) => handleChange(e)} name="powerWatt" label="Power consumption (W)" type='number' size="small"></TextField></TableCell>
+          <TableCell><Button disabled={formHasEmptyFields()} type="submit" variant="contained">Save</Button></TableCell>
         </TableRow>
       </TableBody>
     </Table>
@@ -46,4 +83,4 @@ export function UsageTable({ usageData, onRemoveClick, onHandleSubmit }: UsageTa
   </form>
   </>
   )
-}
+})

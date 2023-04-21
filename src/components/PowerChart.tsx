@@ -45,7 +45,7 @@ export function PowerChart({ powerData, usageData, showTomorrow }: ChartProps) {
         const areaData: PowerPrice[] = JSON.parse(JSON.stringify(data.filter((p) => p.date > startDate && p.date < endDate)))
         areaData.unshift({ date: startDate, value: areaData[0].value });
         areaData.push({ date: endDate, value: areaData[areaData.length - 1].value });
-        areas.push({name: areaName, data: areaData.map((d) => { return ({date: d.date, value: d.value * u.powerWatt / 1000})} )})
+        areas.push({name: areaName, data: areaData.map((d) => { return ({date: d.date, value: d.value * Number(u.powerWatt) / 1000})} )})
       })
     }
     console.log('areas', areas)
