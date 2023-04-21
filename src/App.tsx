@@ -30,7 +30,7 @@ function App() {
       powerWatt: 500
     }
   ])
-
+  const [palette, setPalette] = useState<string[]>(['hsl(180, 50%, 50%)'])
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
   const theme = React.useMemo(
@@ -42,6 +42,14 @@ function App() {
       }),
     [prefersDarkMode],
   );
+
+  const refreshPalette = (length: number) => {
+    const newPalette: string[] = [];
+    for (let i = 1; i <= length; i++) {
+      newPalette.push(`hsl(${360 / length * i}, 50%, 50%)`)
+    }
+    setPalette(newPalette);
+  }
 
   const handleSubmit = (e: BaseSyntheticEvent) => {
     e.preventDefault();
@@ -64,21 +72,22 @@ function App() {
     }
     setUsageData(newUsage);
     tableRef.current?.resetForm()
+    refreshPalette(newUsage.length);
   }
 
   const handleRemoveClick = (i: number) => {
     const newUsage: Usage[] = JSON.parse(JSON.stringify(usageData));
     newUsage.splice(i, 1);
     setUsageData(newUsage);
+    refreshPalette(newUsage.length);
   }
 
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <UsageTable usageData={usageData} onRemoveClick={handleRemoveClick} onHandleSubmit={handleSubmit} ref={tableRef}/>
-
-        <PowerChart powerData={powerData} usageData={usageData} showTomorrow={showTomorrow}/>
+        <UsageTable usageData={usageData} onRemoveClick={handleRemoveClick} onHandleSubmit={handleSubmit} ref={tableRef} palette={palette}/>
+        <PowerChart powerData={powerData} usageData={usageData} showTomorrow={showTomorrow} palette={palette}/>
       </ThemeProvider>
     </div>
   )

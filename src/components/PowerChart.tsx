@@ -5,10 +5,11 @@ import { Usage } from '../interfaces/Usage';
 export type ChartProps = {
   powerData: PowerPrice[],
   usageData: Usage[],
-  showTomorrow: boolean
+  showTomorrow: boolean,
+  palette: string[]
 }
 
-export function PowerChart({ powerData, usageData, showTomorrow }: ChartProps) {
+export function PowerChart({ powerData, usageData, showTomorrow, palette }: ChartProps) {
   const lineData: PowerPrice[] = showTomorrow ? powerData.slice(48) : powerData.slice(0,47)
   const areas: {name: string, data: PowerPrice[]}[] = getAreas(lineData);
 
@@ -28,8 +29,8 @@ export function PowerChart({ powerData, usageData, showTomorrow }: ChartProps) {
       {/* <Tooltip /> */}
       <Legend />
       <Line data={lineData} dataKey="value" stroke="#8884d8" dot={false} yAxisId="left" name="Sähkön hinta (snt/kWh, vasen asteikko)" />
-      {areas.map((a) => (
-        <Area yAxisId="right" data={a.data} dataKey="value"/>
+      {areas.map((a, i) => (
+        <Area key={i} fill={palette[i]} yAxisId="right" data={a.data} dataKey="value"/>
       ))}
     </ComposedChart>
     </>

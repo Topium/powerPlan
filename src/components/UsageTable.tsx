@@ -1,14 +1,16 @@
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button, TextField } from '@mui/material';
 import { Usage } from '../interfaces/Usage';
 import { BaseSyntheticEvent, forwardRef, useImperativeHandle, useState } from 'react';
+import './UsageTable.css';
 
 export type UsageTableProps = {
   usageData: Usage[];
   onRemoveClick: (i: number) => void;
   onHandleSubmit: (e: BaseSyntheticEvent) => void;
+  palette: string[];
 }
 
-export const UsageTable = forwardRef<{resetForm: () => void}, UsageTableProps>(({ usageData, onRemoveClick, onHandleSubmit }, ref) => {
+export const UsageTable = forwardRef<{resetForm: () => void}, UsageTableProps>(({ usageData, onRemoveClick, onHandleSubmit, palette }, ref) => {
   const resetForm = () => {
     setForm({ name: '', start: '', end: '', powerWatt: ''})
   }
@@ -31,7 +33,6 @@ export const UsageTable = forwardRef<{resetForm: () => void}, UsageTableProps>((
   }
 
   const handleChange = (e: BaseSyntheticEvent)  => {
-    console.log('handlechange', e)
     const temp = {...form};
     const key: keyof typeof temp = e.target.name;
     temp[key] = e.target.value;
@@ -65,7 +66,7 @@ export const UsageTable = forwardRef<{resetForm: () => void}, UsageTableProps>((
       <TableBody>
         {usageData.map(((u, i) => (
           <TableRow key={i}>
-            <TableCell onClick={() => handleCellClick(i)}>{u.name}</TableCell>
+            <TableCell onClick={() => handleCellClick(i)}><span className="dot" style={{ backgroundColor: palette[i] }}></span>{u.name}</TableCell>
             <TableCell onClick={() => handleCellClick(i)}>{u.start}</TableCell>
             <TableCell onClick={() => handleCellClick(i)}>{u.end}</TableCell>
             <TableCell onClick={() => handleCellClick(i)}>{u.powerWatt}</TableCell>
